@@ -1,0 +1,72 @@
+{% extends 'partials/base.html' %}
+{% load accounts_extras %}
+
+{% block title %}Search{% endblock title %}
+
+{%block content%}
+<div class="row row-cols-2 row-cols-md-3 g-4">
+{% for profile in profiles %}
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+        <table class="custom-table center">
+            <tr>
+                <th colspan="2">
+                    <img class="profile" src="{{profile.image}}" alt="{{profile.first_name}}'s Profile picture"> <br>
+                </th>
+            </tr>
+            <tr>
+                <td class="table-title">Name:</td>
+                <td class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">{{profile.first_name}} {{profile.last_name}}</td>
+            </tr>
+            <tr>
+                <td class="table-title">Email:</td>
+                <td class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">{{profile.user.email}}</td>
+            </tr>
+            <tr>
+                <td class="table-title">Country:</td>
+                <td class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">{{profile.country | find_country}}</td>
+            </tr>
+            <tr>
+                {% if profile.manager %}
+                <td class="table-title">Manager:</td>
+                <td class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">
+                    <a class="manager-link" href="{%url 'find_profile' profile.manager.profile.slug %}">{{profile.manager.profile.first_name}} {{profile.manager.profile.last_name}}</a>
+                </td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td class="table-title">Organization:</td>
+                {% if profile.organization %}
+                    <td class="card-subtitle mb-2 text-muted table-detail manager-link"><a class="manager-link" href="{% url 'organization_detail' profile.organization.slug%}">{{profile.organization.name}}</a></td>
+                {% else %}
+                    <td class="card-subtitle mb-2 text-muted table-detail manager-link">None</td>
+                {% endif %}
+            </tr>
+        </table>
+        <a class="btn btn-success center"href="{% url 'find_profile' profile.slug %}">See Profile</a> <br />
+      </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% if organizations %}
+<hr>
+{% endif %}
+<div class="row row-cols-2 row-cols-md-3 g-4">
+{% for organ in organizations %}
+    <div class="col">
+        <div class="card">
+            <a class="manager-link" href="{{organ.get_absolute_url}}">
+            <div class="card-body">
+                <div class="card-body profile">
+                    <label class="manager-link" for="name">Organization Name:</label>
+                    <span class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">{{organ.name}}</span>
+                </div>
+            </div>
+            </a>            
+        </div>
+    </div>
+{% endfor %}
+
+{%endblock%}

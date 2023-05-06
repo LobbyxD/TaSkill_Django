@@ -1,0 +1,78 @@
+{% extends 'partials/base.html' %}
+{% load accounts_extras %}
+
+{% block title %}Requests{% endblock title %}
+
+{%block content%}
+    <h1 class="text-center">Requests Recieved:</h1>
+    {% if recieved_requests %}
+    <div class="row row-cols-2 row-cols-md-3 g-4">
+        {% for urequest in recieved_requests %}
+                <div class="col">
+                  <div class="card">
+                    <div class="card-body">
+                    <a class="center" href="{% url 'find_profile' urequest.from_user.profile.slug%}">
+                        <img class="profile" src="{{urequest.from_user.profile.image}}" alt="{{urequest.from_user.profile.first_name}}'s Profile picture"> <br>
+                    </a>
+                    <h6 class="text-center">{{urequest.from_user.profile.first_name}} {{urequest.from_user.profile.last_name}}</h6>
+                        {% if urequest.type_request == "friend" %}
+                        <p class="text-center">{{urequest.from_user.profile.first_name}} {{urequest.from_user.profile.last_name}} wants to become your friend</p>
+                        <a class="btn btn-success center" href="{% url 'accept_request' urequest.id%}">Accept</a> <br>
+                        <a class="btn btn-danger center" href="{% url 'remove_request' urequest.id%}">Decline</a> <br>
+                        {% elif urequest.type_request == "manager" %}
+                        <p class="text-center">{{urequest.from_user.profile.first_name}} {{urequest.from_user.profile.last_name}} wants to become your manager</p>
+                        <a class="btn btn-success center" href="{% url 'accept_request' urequest.id%}">Accept</a> <br>
+                        <a class="btn btn-danger center" href="{% url 'remove_request' urequest.id%}">Decline</a> <br>
+                        {% elif urequest.type_request == "join organization" %}
+                        <p class="text-center">{{urequest.from_user.profile.first_name}} {{urequest.from_user.profile.last_name}} wants to join your organization</p>
+                        <a class="btn btn-success center" href="{% url 'accept_request' urequest.id%}">Accept</a> <br>
+                        <a class="btn btn-danger center" href="{% url 'remove_request' urequest.id%}">Decline</a> <br>
+                    {% endif %}
+                    <a class="btn btn-success center" href="{% url 'find_profile' urequest.from_user.profile.slug%}">View Profile</a> <br />
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="center">
+            <h6>None.</h6>
+        </div>
+    {% endif %}
+    <hr>
+    <h1 class="text-center">Sent Requests:</h1>
+    {% if sent_requests %}
+        <div class="row row-cols-2 row-cols-md-3 g-4">
+            {% for urequest in sent_requests %}
+            <div class="col">
+                <div class="card">
+                  <div class="card-body">
+                        <a class="center" href="{% url 'find_profile' urequest.to_user.profile.slug%}">
+                            <img class="center profile" src="{{urequest.to_user.profile.image}}" alt="{{urequest.to_user.profile.first_name}}'s Profile picture"> <br>
+                        </a>
+                        <h6 class="text-center">{{urequest.to_user.profile.first_name}} {{urequest.to_user.profile.last_name}}</h6>
+                        {% if urequest.type_request == "friend" %}
+                            <p class="text-center">You sent a {{urequest.type_request}} request</p>
+                            <a class="btn btn-danger center" href="{% url 'remove_request' urequest.id%}">Cancel {{urequest.type_request}} request</a> <br>
+                        {% elif urequest.type_request == "manager" %}
+                            <p class="text-center">You sent a {{urequest.type_request}} request</p>
+                            <a class="btn btn-danger center" href="{% url 'remove_request' urequest.id%}">Cancel {{urequest.type_request}} request</a> <br>
+                        {% elif urequest.type_request == "join organization" %}
+                            <p class="text-center">{{urequest.from_user.profile.first_name}} {{urequest.from_user.profile.last_name}} was requested to join your organization</p>
+                            <a class="btn btn-danger center" href="{% url 'remove_request' urequest.id%}">Cancel {{urequest.type_request}} request</a> <br>
+                        {% endif %}
+                        <a class="btn btn-success center" href="{% url 'find_profile' urequest.to_user.profile.slug%}">View Profile</a> <br />
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6>None.</h6>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{%endblock%}

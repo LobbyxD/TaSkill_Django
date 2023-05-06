@@ -1,0 +1,47 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}Task Details{% endblock title %}
+
+{% block content %}
+<div class="row row-cols-1 row-cols-md-1 g-1">
+    <div class="col center">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="text-center">{{task.title}}</h3>
+                <h6 class="text-center">Status: {{task.status.current_status.name}}</h6>
+                <hr>
+                <h6 class="text-center">Description:</h6>
+                <pre class="card" style="padding:1rem;">{{task.description}}</pre>
+                <hr>
+                <hr>
+                <h6 class="text-center">Assignees' Progress:</h6>
+                {% if task.assignee_progress %}
+                <pre class="card" style="padding:1rem;">{{task.assignee_progress}}</pre>
+                {% else %}
+                <h6 class="card text-center" style="padding:1rem;">None</h6>
+                {% endif %}
+                <hr>
+                <hr>
+                <h6 class="text-center">Assignees:</h6>
+                <div class="card assignee" style="padding:1rem;">
+                    {% for assignee in task.assignee.all %}
+                    <a href="{% url 'find_profile' assignee.profile.slug %}"><p class="text-center">{{assignee.profile.first_name}} {{assignee.profile.last_name}}</p></a>
+                    {% endfor %}
+                </div>
+                <hr>
+                {% if request.user.is_staff or organization_staff_perms or task_edit_perms%}
+                <a class="btn btn-success text-center" href="{% url 'task_make_progress' board.slug task.slug %}">Make progress</a>
+                {% if task.assignee_progress and task.status.current_status.name == "In-Progress" %}
+                <a class="btn btn-success text-center" href="{% url 'send_task_to_review' board.slug task.slug %}">Send to Review</a>
+                {% comment %} send moves it to the next status {% endcomment %}
+                {% endif %}
+                {% if request.user.is_staff or organization_edit_perms or board_edit_perms %}
+                <a class="btn btn-success text-center" href="{% url 'task_edit_page' board.slug task.slug %}">Edit Page</a>
+                <a class="delete btn btn-danger" href="{% url 'delete_task' board.slug task.slug %}">❌</a>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

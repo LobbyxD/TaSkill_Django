@@ -1,0 +1,45 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}Homepage{% endblock title %}
+
+{% block content %}
+        {% if request.user.is_staff %}
+            <h1 class="text-center">Hello Admin.</h1>
+        {% else %}
+            <h1 class="text-center">Hello {{request.user.profile.first_name}} {{request.user.profile.last_name}}</h1>
+        {% endif %}
+        {% if requests %}
+            <div class="center">
+                <div class="card">
+                    <div class="card-body">
+                <a href="{% url 'user_requests' %}">You have {{requests}} requests</a> <br>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if organization %}
+            <div class="center">
+                <div class="card">
+                    <div class="card-body">
+                {% if request.user.is_staff %}
+                    <a href="{% url 'all_organizations' %}">View All Organizations</a>
+                {% else %}
+                    <a href="{% url 'organization_list' %}">View Organization</a>
+                {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="center">
+                <div class="card">
+                    <div class="card-body">
+                {% if request.user.is_staff %}
+                    <a href="{% url 'all_organizations' %}">View All Organizations</a>
+                {% else %}
+                    <a href="{% url 'organization_creation' %}">Create Organization</a>
+                {% endif %}
+                    </div>
+                </div>
+            </div>
+         {% endif %}
+{% endblock content %}

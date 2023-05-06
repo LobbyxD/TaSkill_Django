@@ -1,0 +1,1 @@
+[{"model": "taskill_tasks.task_status", "pk": "Completed", "fields": {}}, {"model": "taskill_tasks.task_status", "pk": "In-Progress", "fields": {}}, {"model": "taskill_tasks.task_status", "pk": "On Hold", "fields": {}}, {"model": "taskill_tasks.task_status", "pk": "Open", "fields": {}}, {"model": "taskill_tasks.task_status", "pk": "Review", "fields": {}}]

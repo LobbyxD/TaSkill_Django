@@ -1,0 +1,22 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}Create a Task{% endblock title %}
+
+{% block content %}
+    <div class="center">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <table>
+                        {{form}}
+                    </table>
+                    <br>
+                    <div class="center">
+                        <button class="btn btn-success" type="submit">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

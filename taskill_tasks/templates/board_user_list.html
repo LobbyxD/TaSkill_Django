@@ -1,0 +1,39 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}Board's users{% endblock title %}
+
+{% block content %}
+    {% if board_edit_perms or organization_edit_perms %}
+    <a class="btn btn-success center" href="{% url 'give_board_permission' board.slug %}">Add Permissions</a>
+    <br>
+    {% endif %}
+    {% if users %}
+    {% if users.count > 2 %}
+    <div class="row row-cols-2 row-cols-md-3 g-4">
+    {% elif users.count > 1 %}
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+    {% elif users.count > 0 %}
+    <div class="row row-cols-1 row-cols-md-1 g-1">
+    {% else %}
+    <div class="row row-cols-2 row-cols-md-3 g-4">
+    {% endif %}
+        {% for user in users %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        {% if user.organization.owner == user.user %}
+                            <h3 class="text-center">{{user.first_name}} {{user.last_name}}</h3>
+                            <h6 class="text-center">Owner and Creator</h6>
+                        {% else %}
+                            <h6 class="text-center">{{user.first_name}} {{user.last_name}}</h6>
+                            {% if user != request.user.profile %}
+                                <a class="btn btn-success center" href="{% url 'view_user_board_permissions' user.user.id %}">Edit Permissions</a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endblock content %}

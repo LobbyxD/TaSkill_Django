@@ -1,0 +1,107 @@
+{% extends 'partials/base.html' %}
+{% load accounts_extras %}
+
+{% block title %}Profile{% endblock title %}
+{%block content%}
+<h1 class="center-text">{{profile.first_name}}'s Profile</h1>
+<div class="row row-cols-1 row-cols-md-3 g-4 center">
+    <div class="card">
+        <div class="card-body profile">
+            <table class="custom-table center">
+                <tr>
+                    <th colspan="2">
+                        <img class="profile" src="{{profile.image}}" alt="{{profile.first_name}}'s Profile picture"> <br>
+                    </th>
+                    <td align="right">
+                        {% if user_friend_requests %}
+                                {% for urequest in user_friend_requests %}
+                                    {% if urequest.to_user.profile.id == profile.id and urequest.from_user == request.user %}
+                                            <a href="{% url 'remove_request' urequest.id%}"><img class="icon" src="https://cdn.iconscout.com/icon/free/png-256/checkmark-81-458457.png" title="Remove Friend Request" alt="Remove Friend Request"></a> <br>
+                                    {% elif urequest.from_user.profile.id == profile.id %}
+                                            <a href="{% url 'accept_request' urequest.id%}"><img class="icon" src="https://cdn.iconscout.com/icon/free/png-256/plus-1767882-1502135.png" title="Accept" alt="Accept Friend Request"></a>
+                                            <a href="{% url 'remove_request' urequest.id%}"><img class="icon" src="https://cdn.iconscout.com/icon/free/png-256/minus-146-475070.png" title="Decline" alt="Decline Friend Request"></a> <br>
+                                    {% elif profile.id == friend.id %}
+                                            <a href="{% url 'unfriend' profile.user.id %}"><img src="http://cdn.onlinewebfonts.com/svg/img_108634.png" title="Unfriend" alt="Unfriend"></a>
+                                    {% else %}
+                                            {% if check_friendship %}
+                                                <a href="{% url 'unfriend' profile.user.profile.id %}"><img class="icon" src="http://cdn.onlinewebfonts.com/svg/img_108634.png" title="Unfriend" alt="Unfriend"></a> <br>
+                                            {% else %}
+                                                <a href="{% url 'send_friend_request' profile.user.id %}"><img class="icon" src="https://cdn.iconscout.com/icon/free/png-256/add-1431-433446.png" title="Add Friend" alt="add friend"></a> <br>
+                                            {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                            {% if check_friendship %}
+                                <a href="{% url 'unfriend' profile.user.profile.id %}"><img class="icon" src="http://cdn.onlinewebfonts.com/svg/img_108634.png" title="Unfriend" alt="Unfriend"></a> <br>
+                            {% else %}
+                                <a href="{% url 'send_friend_request' profile.user.id %}"><img class="icon" src="https://cdn.iconscout.com/icon/free/png-256/add-1431-433446.png" title="Add Friend" alt="add friend"></a> <br>
+                            {% endif %}
+                        {% endif %}
+                        {% if user_manager_requests %}
+                            {% for urequest in user_manager_requests %}
+                                {% if urequest.to_user.profile.id == profile.id and urequest.from_user == request.user %}
+                                        <a href="{% url 'remove_request' urequest.id%}"><img class="icon" src="https://cdn.iconscout.com/icon/free/png-256/checkmark-81-458457.png" title="Remove Manager Request" alt="Remove Manager Request"></a> <br>
+                                    {% elif urequest.from_user.profile.id == profile.id %}
+                                        <a href="{% url 'accept_request' urequest.id%}"><img class="icon" src="https://cdn.iconscout.com/icon/free/png-256/plus-1767882-1502135.png" title="Accept" alt="Accept Manager Request"></a>
+                                        <a href="{% url 'remove_request' urequest.id%}"><img class="icon" src="https://cdn.iconscout.com/icon/free/png-256/minus-146-475070.png" title="Decline" alt="Decline Manager Request"></a> <br>
+                                    {% elif urequest.to_user.profile.id != profile.id and urequest.from_user != request.user%}
+                                        {% if not check_manager %}
+                                        <a href="{% url 'send_manager_request' profile.user.id %}"><img class="icon" src="https://freesvg.org/img/ftconnect-creating.png" title="Send Manager Request" alt="Send Manager Request"></a> <br>
+                                        {% else %}
+                                        <a href="{% url 'remove_manager' profile.user.id %}"><img class="icon" src="https://static.thenounproject.com/png/1284862-200.png" title="Remove as Manager" alt="Remove as Manager"></a> <br>
+                                        {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {% if not check_manager %}
+                                    <a href="{% url 'send_manager_request' profile.user.id %}"><img class="icon" src="https://freesvg.org/img/ftconnect-creating.png" title="Send Manager Request" alt="Send Manager Request"></a> <br>
+                                {% else %}
+                                    <a href="{% url 'remove_manager' profile.user.id %}"><img class="icon" src="https://static.thenounproject.com/png/1284862-200.png" title="Remove as Manager" alt="Remove as Manager"></a> <br>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="table-title">Name:</td>
+                    <td class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">{{profile.first_name}} {{profile.last_name}}</td>
+                </tr>
+                <tr>
+                    <td class="table-title">Email:</td>
+                    <td class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">{{profile.user.email}}</td>
+                </tr>
+                <tr>
+                    <td class="table-title">Country:</td>
+                    <td class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">{{profile.country | find_country}}</td>
+                </tr>
+                <tr>
+                    <td class="table-title">Manager:</td>
+                    {% if manager %}
+                    <td class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">
+                        <a class="manager-link" href="{%url 'find_profile' manager.slug %}">{{manager.first_name}} {{manager.last_name}} </a>
+                    </td>
+                    {% else %}
+                    <td class="card-subtitle mb-2 text-muted table-detail manager-link">None</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td class="table-title">Organization:</td>
+                    {% if profile.organization %}
+                        <td class="card-subtitle mb-2 text-muted table-detail manager-link"><a class="manager-link" href="{% url 'organization_detail' profile.organization.slug%}">{{profile.organization.name}}</a></td>
+                    {% else %}
+                        <td class="card-subtitle mb-2 text-muted table-detail manager-link">None</td>
+                    {% endif %}
+                </tr>
+            </table>
+
+            <div class="center">
+                {% if request.user.is_staff %}
+                    <a class="btn" href="{%url 'admin:index'%}"><button class="btn btn-success center">Go to Admin Panel</button></a>
+                {% else %}
+                    <a class="btn" href="{%url 'profile'%}"><button class="btn btn-success center">Return to my profile</button></a>
+                {% endif %}
+                <a class="btn"><button class="btn btn-success center" onClick="javascript:history.go(-1);">Back</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}

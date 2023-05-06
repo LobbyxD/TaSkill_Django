@@ -1,0 +1,32 @@
+{% extends 'partials/base.html' %}
+{% load accounts_extras %}
+
+{% block title %}Friend List{% endblock title %}
+
+{%block content%}
+<h1 class="text-center">Friend List</h1>
+    {% if friends %}
+        {% for friend in friends %}
+            <div class="center">
+                <div class="card">
+                    <div class="card-body profile">
+                        <a href="{% url 'find_profile' friend.slug%}">
+                            <img class="profile" src="{{friend.image}}" alt="{{friend.first_name}}'s Profile picture"> <br>
+                        </a>
+                        <h6 class="text-center">{{friend.first_name}} {{friend.last_name}}</h6>
+                        <a class="btn btn-danger center" href="{% url 'unfriend' friend.id%}">Unfriend</a> <br />
+                        <a class="btn btn-success center" href="{% url 'find_profile' friend.slug%}">View Profile</a> <br />
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="center">
+            <div class="card">
+                <div class="card-body profile">
+                    <h6>No friends, sorry.</h6>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{%endblock%}

@@ -1,0 +1,38 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}Organization's Users{% endblock title %}
+
+{% block content %}
+    {% if users %}
+    {% if users.count > 2 %}
+    <div class="row row-cols-2 row-cols-md-3 g-4">
+    {% elif users.count > 1 %}
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+    {% elif users.count > 0 %}
+    <div class="row row-cols-1 row-cols-md-1 g-1">
+    {% else %}
+    <div class="row row-cols-2 row-cols-md-3 g-4">
+    {% endif %}
+        {% for user in users %}
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    {% if user.organization.owner == user.user %}
+                        <h3 class="text-center">{{user.first_name}} {{user.last_name}}</h3>
+                        <h6 class="text-center">Owner and Creator</h6>
+                    {% else %}
+                        <h6 class="text-center">{{user.first_name}} {{user.last_name}}</h6>
+                        {% if organization_staff_perms or request.user.is_staff %}
+                        <div class="center">
+                        <a class="btn btn-success" href="{% url 'view_user_organization_permissions' user.user.id %}">Edit Permissions</a>
+                        <a class="btn btn-danger" href="{% url 'remove_user_from_organization' user.id %}">Remove from organization</a>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endblock content %}

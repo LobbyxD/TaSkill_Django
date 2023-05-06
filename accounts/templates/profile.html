@@ -1,0 +1,52 @@
+{% extends 'partials/base.html' %}
+{% load accounts_extras %}
+
+{% block title %}Profile{% endblock title %}
+{%block content%}
+<h1 class="center-text">Profile</h1>
+<div class="center">
+    <div class="card">
+        <div class="card-body profile">
+            <table class="custom-table">
+                <tr>
+                    <th colspan="2">
+                        <a href="{% url 'update-image' %}"><img class="profile" src="{{profile.image}}" title="Update Image" alt="{{profile.first_name}}'s Profile picture"></a> <br>
+                    </th>
+                </tr>
+                <tr>
+                    <td class="table-title">Name:</td>
+                    <td class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">{{profile.first_name}} {{profile.last_name}}</td>
+                </tr>
+                <tr>
+                    <td class="table-title">Email:</td>
+                    <td class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">{{profile.user.email}}</td>
+                </tr>
+                <tr>
+                    <td class="table-title">Country:</td>
+                    <td class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">{{profile.country | find_country}}</td>
+                </tr>
+                <tr>
+                    <td class="table-title">Manager:</td>
+                    {% if manager %}
+                    <td class="card-subtitle mb-2 text-muted table-detail manager-link" id="name"><a class="manager-link" href="{%url 'find_profile' manager.slug %}">{{manager.first_name}} {{manager.last_name}}</td>
+                    {% else %}
+                    <td class="card-subtitle mb-2 text-muted table-detail manager-link">None</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td class="table-title">Organization:</td>
+                    {% if profile.organization %}
+                        <td class="card-subtitle mb-2 text-muted table-detail manager-link"><a class="manager-link" href="{% url 'organization_detail' profile.organization.slug%}">{{profile.organization.name}}</a></td>
+                    {% else %}
+                        <td class="card-subtitle mb-2 text-muted table-detail manager-link">None</td>
+                    {% endif %}
+                </tr>
+            </table>
+
+            <a class="btn btn-success center"href="{%url 'friend_list'%}">Friends</a> <br />
+            <a class="btn btn-success center"href="{%url 'organization_list'%}">My Organizations</a> <br />
+            <a class="btn btn-success center"href="{%url 'profile_edit'%}">Edit Profile</a> <br />
+        </div>
+    </div>
+</div>
+{%endblock%}

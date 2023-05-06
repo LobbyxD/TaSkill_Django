@@ -1,0 +1,43 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}Boards{% endblock title %}
+
+{% block content %}
+{% if request.user.is_staff %}
+    <a class="btn btn-success center" href="{% url 'board_creation' %}">Create a Board</a>
+    <br>
+{% endif %}
+{% if organization_edit_perms %}
+    <a class="btn btn-success center" href="{% url 'board_creation'%}">Create a new board</a>
+    <br>
+{% endif %}
+{% if boards.count > 2 %}
+    <div class="row row-cols-2 row-cols-md-3 g-4">
+{% elif boards.count > 1 %}
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+{% elif boards.count > 0 %}
+    <div class="row row-cols-1 row-cols-md-1 g-1">
+{% else %}
+    <div class="row row-cols-2 row-cols-md-3 g-4">
+{% endif %}
+    {% for board in boards %}
+    <div class="col">
+        <a class="nav-link"href="{% url 'view_user_tasks' board.slug%}">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-center">{{board.name}}</h3>
+                    {% if request.user.is_staff %}
+                    <h6 class="text-center"> Organization: {{board.organization}}</h6>
+                    {% endif %}
+                {% if board_edit_perms or organization_edit_perms or request.user.is_staff %}
+                    <a class="btn btn-success center" href="{% url 'view_user_tasks' board.slug%}">View Tasks</a>
+                    <br>
+                    <a class="btn btn-success center" href="{% url 'board_edit_page' board.slug%}">Edit</a>
+                {% endif %}
+                </div>
+            </div>
+        </a>
+    </div>
+{% endfor %}
+</div>
+{% endblock content %}

@@ -1,0 +1,40 @@
+{% load static %} {% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <!-- JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+      crossorigin="anonymous"
+    ></script>
+    <script src="{% static 'js/script.js' %}"></script>
+
+    <title>{% block title %} {%endblock%}</title>
+  </head>
+
+  <body>
+    {% include "partials/navbar.html" %}
+    <br>
+    <div style="margin:auto; width:80%;">
+    {% block content %}
+     {% endblock %}
+    </div>
+
+  </body>
+  {% if messages %}
+    {% for message in messages %}
+    {% if "info" in message.tags %}
+      <script>alert("{{message | safe}}");</script>
+    {% endif %}
+    {% endfor %}
+  {% endif %}
+</html>

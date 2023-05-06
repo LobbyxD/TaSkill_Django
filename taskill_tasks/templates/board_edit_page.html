@@ -1,0 +1,15 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}Edit Board{% endblock title %}
+
+{% block content %}
+<div class="center">
+    <div class="card">
+        <div class="card-body">
+            <a class="btn btn-success" href="{% url 'list_users_in_board' board.slug%}">View Members</a>
+            <a class="btn btn-success" href="{% url 'give_board_permission' board.slug %}" id="name">Add Permissions</a>
+            <a class="btn btn-danger" href="{% url 'delete_board' board.slug %}">DELETE</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

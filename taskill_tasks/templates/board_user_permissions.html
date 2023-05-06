@@ -1,0 +1,23 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}User Permissions{% endblock title %}
+
+{% block content %}
+<a class="btn btn-success center" href="{% url 'give_board_permission' board.slug %}" id="name">Add Permissions</a>
+<br>
+<div class="center manager-link">
+    <div class="card">
+        <div class="card-body profile">
+            <h6 class="text-center manager-link">{{board_user.profile.first_name}} {{board_user.profile.last_name}}</h6>
+            {% for permission in permissions %}
+            <div class="center" style="padding:1rem;">
+                <label class="manager-link" for="name">{{permission.permissions | capfirst}}</label>
+                <a class="btn btn-danger" href="{% url 'remove_board_permission' board.slug permission.permissions %}" id="name">Remove</a>
+                <br>
+            </div>
+            <br>
+            {% endfor %}
+        </div>
+    </div>
+</div>  
+{% endblock content %}

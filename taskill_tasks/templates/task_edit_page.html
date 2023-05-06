@@ -1,0 +1,16 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}Edit Task{% endblock title %}
+
+{% block content %}
+<div class="center">
+    <div class="card">
+        <div class="card-body">
+            <a class="btn btn-success" href="{% url 'task_detail' board.slug task.slug %}">View Task</a>
+            <a class="btn btn-success" href="{% url 'edit_assignees_to_task' board.slug task.slug %}" id="name">Edit Assignees</a>
+            <a class="btn btn-success" href="{% url 'change_task_status' board.slug task.slug %}" id="name">Change Status</a>
+            <a class="btn btn-danger" href="{% url 'delete_task' board.slug task.slug %}">DELETE</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,6 @@
+migrations/
+__pycache__/
+test-list.txt
+
+#Anything but those file (starts with !)
+!/migrations/__init__.py

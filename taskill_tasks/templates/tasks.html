@@ -1,0 +1,107 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}Tasks{% endblock title %}
+
+{% block content %}
+{% if request.user.is_staff or organization_staff_perms or board_edit_perms %}
+    {% if request.user.is_staff %}
+        <div class="row row-cols-3 row-cols-md-3 g-3">
+            <div class="col">
+                <a class="btn btn-success center" href="{% url "board_edit_page" board.slug %}">Edit Board</a>
+            </div>
+    {% else %}
+        <div class="row row-cols-2 row-cols-md-2 g-2">
+    {% endif %}
+            <div class="col">
+                <a class="btn btn-success center" href="{% url "give_board_permission" board.slug %}">Edit Board Permissions</a>
+            </div>
+            <div class="col">
+                <a class="btn btn-success center" href="{% url "task_creation" board.slug %}">Add Task</a>
+            </div>
+        </div>
+        <br>
+{% endif %}
+        {% if request.user.is_staff or organization_staff_perms or board_edit_perms %}
+        {% if board_tasks.count > 2 %}
+            <div class="row row-cols-2 row-cols-md-3 g-4">
+        {% elif board_tasks.count > 1 %}
+            <div class="row row-cols-1 row-cols-md-2 g-3">
+        {% elif board_tasks.count > 0 %}
+            <div class="row row-cols-1 row-cols-md-1 g-1">
+        {% else %}
+            <div class="row row-cols-2 row-cols-md-3 g-4">
+        {% endif %}
+        {% for task in board_tasks %}
+                <div class="col">
+                    <a class="nav-link" href="{% url "task_detail" board.slug task.slug%}">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3>{{task.title}}</h3>
+                                {% if task.status.current_status.name == "Review" %}
+                                <h6>Current Status: {{task.status.current_status.name}}</h6>
+                                <div class="task-status-overlay">
+                                    <h6 id="task-text-rotate">In-{{task.status.current_status.name}}</h6>
+                                </div>
+                                {% elif task.status.current_status.name == "Completed" %}
+                                <h6>Current Status: {{task.status.current_status.name}}</h6>
+                                <div class="task-status-overlay">
+                                    <h6 id="task-text-rotate">{{task.status.current_status.name}}</h6>
+                                </div>
+                                {% else %}
+                                <h6>Current Status: {{task.status.current_status.name}}</h6>
+                                {% endif %}
+                                <div class="card">
+                                <h6>Assignees:</h6>
+                                <div class="card assignee task" id="task">
+                                    {% for assignee in task.assignee.all %}
+                                    <p>{{assignee.profile.first_name}} {{assignee.profile.last_name}}</p>
+                                    {% endfor %}
+                                </div>
+                                <br>
+                                </div>
+                                <br>
+                                <a class="btn btn-success center" href="{% url "task_detail" board.slug task.slug%}">Details</a>
+                                <a class="delete btn btn-danger" href="{% url 'delete_task' board.slug task.slug %}">❌</a>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+        <div class="row row-cols-2 row-cols-md-3 g-4">
+        {% for task in user_tasks %}
+            <div class="col">
+                <a class="nav-link" href="{% url "task_detail" board.slug task.slug%}">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3>{{task.title}}</h3>
+                            {% if task.status.current_status.name == "Review" %}
+                                <h6>Current Status: {{task.status.current_status.name}}</h6>
+                                <div class="task-status-overlay">
+                                    <h6 id="task-text-rotate">In-{{task.status.current_status.name}}</h6>
+                                </div>
+                                {% elif task.status.current_status.name == "Completed" %}
+                                <h6>Current Status: {{task.status.current_status.name}}</h6>
+                                <div class="task-status-overlay">
+                                    <h6 id="task-text-rotate">{{task.status.current_status.name}}</h6>
+                                </div>
+                                {% else %}
+                                <h6>Current Status: {{task.status.current_status.name}}</h6>
+                                {% endif %}
+                            <h6>Assignees:</h6>
+                            <div class="card assignee task" id="task">
+                                {% for assignee in task.assignee.all %}
+                                <p>{{assignee.profile.first_name}} {{assignee.profile.last_name}}</p>
+                                {% endfor %}
+                            </div>
+                            <br>
+                            <a class="btn btn-success center" href="{% url "task_detail" board.slug task.slug%}">Details</a>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+        {% endif %}
+            </div>
+    {% comment %} Task has an edit button - contains delete task{% endcomment %}
+{% endblock content %}

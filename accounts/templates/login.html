@@ -1,0 +1,38 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}Login{% endblock title %}
+
+{%block content %}
+<h1 class="text-center">Sign-in</h1>
+<div class="center">
+  <div class="cards">
+    <div class="card" style="width: fit-content">
+      <div class="card-body">
+        {%if messages %}
+        {%for message in messages %}
+        {% if message.tags == "warning" %}
+        {{message}}
+        {% endif %}
+        {%endfor%}
+        {%endif%}
+        <form method="post">
+          <table>
+            {% csrf_token %} {{form}}
+          </table>
+          <div class="center btn-space">
+          <button class="btn btn-dark" type="submit">Sign-in</button>
+        </form>
+          <button class="btn btn-dark"><a class="btn-dark" href="{%url 'register'%}">Sign-up</a></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+Level Requirement:
+NPC:
+Location:
+Quest Requirements:
+Finish NPC:

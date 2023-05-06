@@ -1,0 +1,77 @@
+{% extends 'partials/base.html' %}
+{% load accounts_extras %}
+
+{% block title %}Organization Details{% endblock title %}
+
+{% block content %}
+<div class="row row-cols-1 row-cols-md-1 g-1">
+    <div class="col center">
+        <div class="card">
+            <div class="card-body">
+                    <label for="name">Organization Name: </label>
+                    <span class="card-subtitle mb-2 text-muted table-detail manager-link" id="name">{{organization.name}}</span> <br>
+                    <label for="user">User: </label>
+                    <span class="card-subtitle mb-2 text-muted table-detail manager-link" id="user">{{organization.owner}}</span> <br>
+                    <label for="fullname">Owner name: </label>
+                    <span class="card-subtitle mb-2 text-muted table-detail manager-link" id="fullname">
+                        {{organization.owner.profile.first_name}} {{organization.owner.profile.last_name}}
+                    </span> <br>
+                    <label for="email">Email: </label>
+                    <span class="card-subtitle mb-2 text-muted table-detail manager-link" id="email">{{organization.owner.email}}</span> <br>
+                    <label for="country">Country: </label>
+                    <span class="card-subtitle mb-2 text-muted table-detail manager-link" id="country">
+                        {{organization.owner.profile.country }}
+                    </span> <br>
+                    <label for="management">Total Workers: </label>
+                    <span class="card-subtitle mb-2 text-muted table-detail manager-link" id="management">
+                        {{users.count}}
+                    </span>
+                <br>
+                <div class="center">
+                    <input class="btn btn-success center" type=button value="Back" onClick="javascript:history.go(-1);">
+                    {% if organization_requests %}
+                        {% for urequest in organization_requests %}
+                            {% if urequest.to_user == request.user and urequest.from_user == organization.owner %}
+                                <a class="btn btn-success center" href="{% url 'remove_request' urequest.id%}">Cancel Request</a> <br>
+                            {% elif urequest.to_user != organization.owner and urequest.from_user != request.user%}
+                                {% if not request.user.profile.organization %}
+                                    <br>
+                                    <a class="btn btn-success center" href="{% url 'send_organization_request' organization.slug %}">Ask to join</a> <br>
+                                {% elif urequest.organization_id == request.user.profile.organization.id %}
+                                    <a class="btn btn-success center" href="{% url 'leave_organization' organization.slug %}">Quit</a>
+                                {% else %}
+                                    <a class="btn btn-success center" href="{% url 'remove_request' request.user.id %}">Cancel Request</a>
+                                {% endif %}
+                            {% elif urequest.from_user == request.user %}
+                                <a class="btn btn-success center" href="{% url 'remove_request' urequest.id%}">Cancel Request</a> <br>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        {% if not request.user.is_staff  %}
+                        {% if not request.user.profile.organization %}
+                            <a class="btn btn-success center" href="{% url 'send_organization_request' organization.slug %}">Ask to join</a> <br>
+                            {% elif check_user_organ_staff or request.user.is_staff %}
+                            <a class="btn btn-success center" href="{% url 'organization_edit_page' organization.slug %}">Edit Organization</a>
+                            {% elif request.user.profile.organization.id != organization.id %}
+                            <a class="btn btn-success center" href="{% url 'organization_detail' organization.slug %}">You're in a different organization.</a>
+                            {% elif organization == request.user.profile.organization%}
+                            <a class="btn btn-success center" href="{% url 'leave_organization' organization.slug %}">Quit</a>
+                            {% endif %}
+                        {% else %}
+                            <div>
+                                <a class="btn btn-success center" href="{% url 'organization_edit_page' organization.slug %}">Edit Organization</a>
+                            </div>
+                            <div>
+                                <a class="btn btn-success center" href="{% url 'view_boards' %}">View Boards</a>
+                            </div>
+                            <div>
+                            <a class="btn btn-danger center" href="{% url 'delete_organization' organization.slug %}">DELETE</a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    {% endblock content %}
